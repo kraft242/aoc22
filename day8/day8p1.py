@@ -1,14 +1,3 @@
-from enum import Enum
-from math import sin as sin, cos as cos, pi as pi
-
-
-class Facing(Enum):
-    EAST = 0
-    SOUTH = 3 * pi / 2
-    WEST = pi
-    NORTH = pi / 2
-
-
 class Tree:
     def __init__(self, x, y, height):
         self.x = x
@@ -22,6 +11,7 @@ class Tree:
 
     def visit(self):
         self.visited = True
+
 
 class Forest:
     def __init__(self, matrix):
@@ -37,7 +27,7 @@ class Forest:
     def mark_visible_trees(self):
         for y, row in enumerate(self.matrix):
             for x, tree in enumerate(row):
-                if self.is_edge(x,y):
+                if self.is_edge(x, y):
                     tree.make_visible()
                     self.num_visible_trees += 1
                 elif self.clear_horizontal_line(tree) or self.clear_vertical_line(tree):
