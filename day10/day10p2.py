@@ -15,6 +15,7 @@ class Driver:
     def get_result(self):
         return self.device.get_result()
 
+
 class Device:
     def __init__(self, instructions):
         self.instructions = instructions
@@ -38,7 +39,7 @@ class Device:
     def instruction_is_noop(self, instruction):
         return len(instruction) == 1
 
-    def instruction_is_addx(self,instruction):
+    def instruction_is_addx(self, instruction):
         return len(instruction) == 2
 
     def increment_clock(self):
@@ -52,8 +53,8 @@ class Device:
         self.increment_clock()
 
     def sprite_contains_current_pixel(self):
-        sprite_start_index = (self.register - 1) % self.width
-        sprite_end_index = (self.register + 1) % self.width
+        sprite_start_index = self.register - 1
+        sprite_end_index = self.register + 1
         pixel_index = (self.clock_cycle) % self.width
         return pixel_index >= sprite_start_index and pixel_index <= sprite_end_index
 
@@ -62,13 +63,15 @@ class Device:
 
     def print_start_cycle_debug(self, instruction):
         cycle_num = self.clock_cycle + 1
-        s = "Start cycle \t" + str(cycle_num) + ": begin executing " + " ".join(instruction)
+        s = "Start cycle \t" + str(cycle_num) + \
+            ": begin executing " + " ".join(instruction)
         print(s)
 
     def print_during_cycle_debug(self):
         cycle_num = self.clock_cycle
         pos = cycle_num - 1
-        s = "During cycle \t" + str(cycle_num) + ": CRT draws pixel in position " + str(pos) + "\n"
+        s = "During cycle \t" + \
+            str(cycle_num) + ": CRT draws pixel in position " + str(pos) + "\n"
         print(s)
 
     def execute_instruction(self, instruction):
@@ -89,7 +92,7 @@ class Device:
     def get_result(self):
         res = ""
         screen_str = self.screen
-        for i,c in enumerate(screen_str):
+        for i, c in enumerate(screen_str):
             if self.index_is_breakpoint(i):
                 res += "\n"
             res += c
@@ -99,7 +102,7 @@ class Device:
         for instruction in self.instructions:
             instruction = instruction.split()
             self.execute_instruction(instruction)
-        
+
 
 def main():
     driver = Driver()
