@@ -14,8 +14,9 @@ class Driver:
 
     def get_result(self):
         signal_strengths = self.device.signal_strengths
-        signal_strength = sum(signal_strengths)
-        return signal_strength
+        signal_strength_total = sum(signal_strengths)
+        return signal_strength_total
+
 
 class Device:
     def __init__(self, instructions):
@@ -31,42 +32,41 @@ class Device:
     def __cycle_is_20(self):
         return self.clock_cycle == 20
 
-    def cycle_is_target(self):
+    def __cycle_is_target(self):
         return self.__cycle_is_20() or self.__cycle_is_multiple_of_40()
 
-    def instruction_is_noop(self, instruction):
+    def __instruction_is_noop(self, instruction):
         return len(instruction) == 1
 
-    def instruction_is_addx(self,instruction):
+    def __instruction_is_addx(self, instruction):
         return len(instruction) == 2
 
-    def increment_clock(self):
+    def __increment_clock(self):
         self.clock_cycle += 1
 
-    def increment_register(self, val):
+    def __increment_register(self, val):
         self.register += val
 
-    def calculate_signal_strength(self):
+    def __calculate_signal_strength(self):
         val = self.clock_cycle * self.register
         self.signal_strengths.append(val)
 
-    def execute_instruction(self, instruction):
+    def __execute_instruction(self, instruction):
         instruction_type = instruction[0]
         num_steps = self.duration.get(instruction_type)
         for _ in range(num_steps):
-            self.increment_clock()
-            if self.cycle_is_target():
-                self.calculate_signal_strength()
-        if self.instruction_is_addx(instruction):
+            self.__increment_clock()
+            if self.__cycle_is_target():
+                self.__calculate_signal_strength()
+        if self.__instruction_is_addx(instruction):
             val = int(instruction[1])
-            self.increment_register(val)
-
+            self.__increment_register(val)
 
     def execute_instructions(self):
         for instruction in self.instructions:
             instruction = instruction.split()
-            self.execute_instruction(instruction)
-        
+            self.__execute_instruction(instruction)
+
 
 def main():
     driver = Driver()

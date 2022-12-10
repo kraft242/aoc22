@@ -33,59 +33,59 @@ class Device:
     def __cycle_is_20(self):
         return self.clock_cycle == int(self.width / 2)
 
-    def cycle_is_target(self):
+    def __cycle_is_target(self):
         return self.__cycle_is_20() or self.__cycle_is_multiple_of_40()
 
-    def instruction_is_noop(self, instruction):
+    def __instruction_is_noop(self, instruction):
         return len(instruction) == 1
 
-    def instruction_is_addx(self, instruction):
+    def __instruction_is_addx(self, instruction):
         return len(instruction) == 2
 
-    def increment_clock(self):
+    def __increment_clock(self):
         self.clock_cycle += 1
 
-    def update_screen(self):
+    def __update_screen(self):
         i = self.clock_cycle
-        if self.sprite_contains_current_pixel():
+        if self.__sprite_contains_current_pixel():
             c = "#"
             self.screen[i] = c
-        self.increment_clock()
+        self.__increment_clock()
 
-    def sprite_contains_current_pixel(self):
+    def __sprite_contains_current_pixel(self):
         sprite_start_index = self.register - 1
         sprite_end_index = self.register + 1
         pixel_index = (self.clock_cycle) % self.width
         return pixel_index >= sprite_start_index and pixel_index <= sprite_end_index
 
-    def increment_register(self, val):
+    def __increment_register(self, val):
         self.register += val
 
-    def print_start_cycle_debug(self, instruction):
+    def __print_start_cycle_debug(self, instruction):
         cycle_num = self.clock_cycle + 1
         s = "Start cycle \t" + str(cycle_num) + \
             ": begin executing " + " ".join(instruction)
         print(s)
 
-    def print_during_cycle_debug(self):
+    def __print_during_cycle_debug(self):
         cycle_num = self.clock_cycle
         pos = cycle_num - 1
         s = "During cycle \t" + \
             str(cycle_num) + ": CRT draws pixel in position " + str(pos) + "\n"
         print(s)
 
-    def execute_instruction(self, instruction):
+    def __execute_instruction(self, instruction):
         instruction_type = instruction[0]
-        self.print_start_cycle_debug(instruction)
+        self.__print_start_cycle_debug(instruction)
         num_steps = self.duration.get(instruction_type)
         for _ in range(num_steps):
-            self.update_screen()
-            self.print_during_cycle_debug()
-        if self.instruction_is_addx(instruction):
+            self.__update_screen()
+            self.__print_during_cycle_debug()
+        if self.__instruction_is_addx(instruction):
             val = int(instruction[1])
-            self.increment_register(val)
+            self.__increment_register(val)
 
-    def index_is_breakpoint(self, i):
+    def __index_is_breakpoint(self, i):
         breakpoint = self.width
         return i != 0 and i % breakpoint == 0
 
@@ -93,7 +93,7 @@ class Device:
         res = ""
         screen_str = self.screen
         for i, c in enumerate(screen_str):
-            if self.index_is_breakpoint(i):
+            if self.__index_is_breakpoint(i):
                 res += "\n"
             res += c
         return res
@@ -101,7 +101,7 @@ class Device:
     def execute_instructions(self):
         for instruction in self.instructions:
             instruction = instruction.split()
-            self.execute_instruction(instruction)
+            self.__execute_instruction(instruction)
 
 
 def main():
