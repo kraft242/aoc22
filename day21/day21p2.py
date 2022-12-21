@@ -1,10 +1,13 @@
+from sympy import symbols, Eq, solve
+
+
 class Reader:
     def __init__(self):
         self.input = []
         self.monkeys = {}
 
     def read(self):
-        file_name = "example.in"
+        file_name = "input.in"
         with open(file_name, "r") as f:
             inp = f.read().splitlines()
             self.__init_monkeys(inp)
@@ -13,7 +16,7 @@ class Reader:
     def __init_monkeys(self, inp):
         for line in inp:
             name = line.split()[0].strip(":")
-            self.monkeys[name] = Monkey()
+            self.monkeys[name] = Monkey(name)
 
     def __add_monkey_jobs(self, inp):
         for line in inp:
@@ -29,32 +32,34 @@ class Reader:
                 monkey.op = line[2]
                 monkey.right = self.monkeys[line[3]]
 
+    def __str__(self):
+        root = self.monkeys["root"]
+        return str(root)
+
     def run(self):
         root = self.monkeys["root"]
-        return root.get_value()
+        eq = str(root)
+        x = symbols("x")
+        sol = solve(eq, x)
+        return sol[0]
 
 
 class Monkey:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.left = None
         self.op = None
         self.right = None
         self.val = None
 
-    def get_value(self):
+    def __str__(self):
+        if self.name == "root":
+            return "(" + str(self.left) + " - " + str(self.right) + ")"
+        if self.name == "humn":
+            return "x"
         if self.val != None:
-            return self.val
-        # Addition
-        if self.op == "+":
-            return self.left.get_value() + self.right.get_value()
-        # Subtraction
-        elif self.op == "-":
-            return self.left.get_value() - self.right.get_value()
-        # (Integer) Division
-        elif self.op == "/":
-            return self.left.get_value() // self.right.get_value()
-        # Multiplication
-        return self.left.get_value() * self.right.get_value()
+            return str(self.val)
+        return "(" + str(self.left) + " " + self.op + " " + str(self.right) + ")"
 
 
 class Tree:
